@@ -1,0 +1,10 @@
+{
+  "name": "image.animation_mode:none",
+  "version": "1.0",
+  "description": "Stop Gif Animations",
+  "permissions": ["webRequest", "webRequestBlocking", "http://*/*.gif", "https://*/*.gif"],
+  "background": {
+    "scripts": ["background.js"]
+  },
+  "manifest_version": 2
+}
