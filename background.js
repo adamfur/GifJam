@@ -56,7 +56,12 @@ function getSingleImage(xhr) {
 			throw new Error('ERROR: gif is broken.');
 		}
 		
-		var nonAnimatedGif = [image.Header, image.Image[0], image.Tail].join('');
+		var nonAnimatedGif = [
+				image.Header,
+				image.GraphicControlExtension.length !== 0 ? image.GraphicControlExtension[0] : "",
+				image.Image[0],
+				image.Tail
+			].join('');
 		var dataURL = 'data:image/gif;base64,' + btoa(nonAnimatedGif);
 		
 		//console.log(dataURL);
