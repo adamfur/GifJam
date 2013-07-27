@@ -11,20 +11,19 @@ chrome.webRequest.onBeforeRequest.addListener(
 			} catch(e) {
 				console.log(e);
 			}
-		}
-	);
+		});
 	return response;
-},
-// filters
-{
-	urls: [
-		"http://*/*.gif",
-		"https://*/*.gif"
-	],
-	types: ["image"]
-},
-// extraInfoSpec
-["blocking"]);
+	},
+	// filters
+	{
+		urls: [
+			"http://*/*.gif",
+			"https://*/*.gif"
+		],
+		types: ["image"]
+	},
+	// extraInfoSpec
+	["blocking"]);
 
 function request(url, callback) {
 	var xhr = new XMLHttpRequest;
