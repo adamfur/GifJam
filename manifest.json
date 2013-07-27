@@ -1,8 +1,11 @@
 {
   "name": "image.animation_mode:none",
-  "version": "1.0.0.1",
+  "version": "1.0.0.2",
   "description": "Stop Gif Animations",
   "permissions": ["webRequest", "webRequestBlocking", "http://*/*.gif", "https://*/*.gif"],
+  "icons": {
+    "128": "logo128.png"
+  },
   "background": {
     "scripts": ["background.js"]
   },
