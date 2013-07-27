@@ -1,11 +1,13 @@
 chrome.webRequest.onBeforeRequest.addListener(
 	function(info) {
+		//console.log("Processing: " + info.url);
 		var response = {redirectUrl: info.url};
 
 		request(info.url, function(xhr) { // callback
 			try {
 				var singleImageSrc = getSingleImage(xhr);
 				response.redirectUrl = singleImageSrc;
+				//console.log("... done");
 			} catch(e) {
 				console.log(e);
 			}
@@ -48,6 +50,12 @@ function getSingleImage(xhr) {
 	if (type === 'image/gif' || type === 'text/plain; charset=x-user-defined') {
 		var parser = new GifParser(body);
 		var image = parser.parse();
+		
+		if (image.Header === null
+		|| image.Image.length === 0) {
+			throw new Error('ERROR: gif is broken.');
+		}
+		
 		var nonAnimatedGif = [image.Header, image.Image[0], image.Tail].join('');
 		var dataURL = 'data:image/gif;base64,' + btoa(nonAnimatedGif);
 		
@@ -159,24 +167,39 @@ var GifParser = function (data) {
                 else if (this.accept('\x2c')) {
                     this.readImageBlock();
                     this._image.Image.push(this.readRange(begin, this._offset));
-                    return; // STICK
+		    //stop parsing after we got first frame
+		    return;
                 }
+                else {
+			//work around for broken images...
+			return;
+		}
+/*                
                 else if (this.expect('\x3b')) {
                     break;
                 }
+*/                
             }
         };
 
         this.readImageBlock = function () {
             this.readSymbol();
+            this.readBytes(2);
+            this.readBytes(2);
+            this.readBytes(2);
+            this.readBytes(2);
+	    
+            var packedField = this.readBytes(1)[0];
+            var tableSize = 3 * (1 << (1 + (packedField & 0x7)));
+            if (packedField >> 7 !== 0)
+            {
+                this.readBytes(tableSize);
+            }
+
             this.readBytes(1);
-            this.readBytes(2);
-            this.readBytes(2);
-            this.readBytes(2);
-            this.readBytes(2);
-            var readByte = this.readBytes(1)[0];
             this.readContiniousBlocks();
-            this.readSymbol();
+            this.expect('\x00');
+            this.readSymbol();	    
         };
 
         this.readCommentExtensionBlock = function () {
@@ -187,11 +210,13 @@ var GifParser = function (data) {
         };
 
         this.readContiniousBlocks = function () {
-            do {
-                var blockSize = this.symbol();
-                this.readBytes(blockSize);
-                this.readSymbol();
-            } while (this.symbol() != 0);
+		while (this.symbol() !== 0) {
+			var blockSize = this.symbol();
+			
+			this.readBytes(blockSize);
+			this.readBytes(1);
+		}
+		this.expect('\x00');
         };
 
         this.readGraphicControlExtensionBlock = function () {
@@ -210,10 +235,7 @@ var GifParser = function (data) {
             this.expect('\x0b');
             this.readSymbol();
 	    this.readBytes(11); //this.expectString("NETSCAPE2.0");
-            this.readBytes(1); //block size
-            this.expect('\x01');
-            this.readBytes(2);
-            this.readBytes(1);
+            this.readContiniousBlocks();
             this.expect('\x00');
             this.readBytes(1);
         };
@@ -222,7 +244,11 @@ var GifParser = function (data) {
             var mul = 1;
 
             this.expectString("GIF");
-            this.expectString("89a");
+	    try {
+		this.expectString("89a");
+	    } catch (e) {
+		this.expectString("87a");    
+	    }
             this.readBytes(2); // width
             this.readBytes(2); // height
             var readByte = this.readBytes(1)[0];
