@@ -245,14 +245,10 @@ var GifParser = function (data) {
         };
 
         this.parseHeader = function () {
-            var mul = 1;
+            var mul = 0;
 
             this.expectString("GIF");
-	    try {
-		this.expectString("89a");
-	    } catch (e) {
-		this.expectString("87a");    
-	    }
+	    this.readBytes(3); //GIF VERSION
             this.readBytes(2); // width
             this.readBytes(2); // height
             var readByte = this.readBytes(1)[0];
