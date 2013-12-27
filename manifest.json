@@ -1,5 +1,5 @@
 {
-  "name": "image.animation_mode:none",
+  "name": "Gif Jam",
   "version": "1.0.0.4",
   "description": "Stop Gif Animations",
   "permissions": ["webRequest", "webRequestBlocking", "http://*/*.gif", "https://*/*.gif", "http://*/*.gif?*", "https://*/*.gif?*"],
