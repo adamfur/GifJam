@@ -1,8 +1,8 @@
 {
   "name": "image.animation_mode:none",
-  "version": "1.0.0.3",
+  "version": "1.0.0.4",
   "description": "Stop Gif Animations",
-  "permissions": ["webRequest", "webRequestBlocking", "http://*/*.gif", "https://*/*.gif"],
+  "permissions": ["webRequest", "webRequestBlocking", "http://*/*.gif", "https://*/*.gif", "http://*/*.gif?*", "https://*/*.gif?*"],
   "icons": {
     "128": "logo128.png",
     "64": "logo64.png",
