@@ -1,0 +1,4 @@
+GifJam
+======
+
+Disable Gif-animations
