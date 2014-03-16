@@ -1,7 +1,7 @@
 {
   "name": "Gif Jam",
   "short_name": "Gif Jam",
-  "version": "1.0.0.4",
+  "version": "1.0.0.5",
   "description": "Stop Gif Animations",
   "permissions": ["webRequest", "webRequestBlocking", "http://*/*.gif", "https://*/*.gif", "http://*/*.gif?*", "https://*/*.gif?*"],
   "icons": {
@@ -9,6 +9,17 @@
     "64": "logo64.png",
     "32": "logo32.png"
   },
+  "browser_action": {
+    "default_icon": {
+      "19": "logo19.png",
+      "38": "logo38.png"
+    },
+    "bw_icon": {
+      "19": "bwlogo19.png",
+      "38": "bwlogo38.png"
+    },    
+    "default_title": "Gif Jam"
+  },  
   "background": {
     "scripts": ["background.js"]
   },

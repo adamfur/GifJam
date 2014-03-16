@@ -1,5 +1,29 @@
+var enabled = true;
+
+var toggleEnabled = function () {
+	enabled = !isEnabled();
+
+	if (enabled) {
+		chrome.browserAction.setIcon({ path: "/logo19.png" })
+	} else {
+		chrome.browserAction.setIcon({ path: "/bwlogo19.png" })
+	}
+};
+
+var isEnabled = function () {
+	return enabled;
+};
+
+chrome.browserAction.onClicked.addListener(function () {
+	toggleEnabled();
+});
+
 chrome.webRequest.onBeforeRequest.addListener(
 	function(info) {
+		if (!isEnabled()) {
+			return info;
+		}
+
 		//console.log("Processing: " + info.url);
 		var response = {redirectUrl: info.url};
 
@@ -12,7 +36,7 @@ chrome.webRequest.onBeforeRequest.addListener(
 				console.log(e);
 			}
 		});
-	return response;
+		return response;
 	},
 	// filters
 	{
