@@ -8,4 +8,4 @@ convert jam.svg -flatten -resize 38x38 logo38.png
 convert jam.svg -flatten -resize 19x19 logo19.png
 convert jam.svg -flatten -monochrome -resize 38x38 bwlogo38.png
 convert jam.svg -flatten -monochrome -resize 19x19 bwlogo19.png
-zip gif_jam.zip *.js manifest.json logo*.png
+zip gif_jam.zip *.js manifest.json *logo*.png
