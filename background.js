@@ -1,27 +1,40 @@
-var enabled = true;
+var enabled = new Object();
+var tabId = 0;
 
 var toggleEnabled = function () {
-	enabled = !isEnabled();
+	enabled[tabId] = !isEnabled();
+	updateTabs();
+};
 
-	if (enabled) {
+var updateTabs = function () {
+	if (isEnabled()) {
 		chrome.browserAction.setIcon({ path: "/logo19.png" })
 	} else {
 		chrome.browserAction.setIcon({ path: "/bwlogo19.png" })
-	}
-};
+	}	
+}
 
 var isEnabled = function () {
-	return enabled;
+	if (enabled[tabId] === null || enabled[tabId] === undefined)
+	{
+		return true;
+	}
+	return enabled[tabId];
 };
 
 chrome.browserAction.onClicked.addListener(function () {
 	toggleEnabled();
 });
 
+chrome.tabs.onActivated.addListener(function (activeInfo) {
+	tabId = activeInfo.tabId;
+	updateTabs();	
+});
+
 chrome.webRequest.onBeforeRequest.addListener(
 	function(info) {
 		if (!isEnabled()) {
-			return info;
+			return {redirectUrl: info.url};
 		}
 
 		//console.log("Processing: " + info.url);
