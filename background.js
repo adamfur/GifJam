@@ -1,6 +1,14 @@
 var enabled = new Object();
 var tabId = 0;
 
+
+var state = 
+{
+	Disabled: 0,
+	Normal: 1,
+	Aggressive: 2
+}
+
 var toggleEnabled = function () {
 	enabled[tabId] = !isEnabled();
 	updateTabs();
@@ -23,12 +31,15 @@ var isEnabled = function () {
 };
 
 chrome.browserAction.onClicked.addListener(function () {
-	toggleEnabled();
+	//toggleEnabled();
+	var id = chrome.contextMenus.create({title: "Search Google Maps", contexts:["selection"], onclick: function () {}});
+	console.log(id);
 });
 
 chrome.tabs.onActivated.addListener(function (activeInfo) {
 	tabId = activeInfo.tabId;
 	updateTabs();	
+chrome.browserAction.setPopup({"tabId":tabId,"popup":"url"});
 });
 
 chrome.webRequest.onBeforeRequest.addListener(
