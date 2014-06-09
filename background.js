@@ -33,7 +33,7 @@ chrome.tabs.onActivated.addListener(function (activeInfo) {
 
 chrome.webRequest.onBeforeRequest.addListener(
 	function(info) {
-		if (!isEnabled()) {
+		if (!isEnabled() || info.url.indexOf("data:image/") === 0 ) {
 			return {redirectUrl: info.url};
 		}
 
