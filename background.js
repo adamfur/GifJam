@@ -1,30 +1,37 @@
 var enabled = new Object();
 var tabId = 0;
 
-var toggleEnabled = function () {
-	enabled[tabId] = !isEnabled();
+var states = 
+[
+	new Stop(),
+	new Play()
+	//new Once()
+];
+
+var updateTabs = function () {
+	var state = readState();
+
+	chrome.browserAction.setIcon({ path: states[state].icon() })
+}
+
+var toggleState = function () {
+	var state = readState();
+
+	state = (state + 1) % states.length;
+	enabled[tabId] = state;
 	updateTabs();
 };
 
-var updateTabs = function () {
-	var icon = "/logo19.png";
-
-	if (!isEnabled()) {
-		icon = "/bwlogo19.png";
-	}	
-	chrome.browserAction.setIcon({ path: icon })
-}
-
-var isEnabled = function () {
+var readState = function () {
 	if (enabled[tabId] === null || enabled[tabId] === undefined)
 	{
-		return true;
-	}
+		return 0;
+	}	
 	return enabled[tabId];
-};
+}
 
 chrome.browserAction.onClicked.addListener(function () {
-	toggleEnabled();
+	toggleState();
 });
 
 chrome.tabs.onActivated.addListener(function (activeInfo) {
@@ -34,7 +41,7 @@ chrome.tabs.onActivated.addListener(function (activeInfo) {
 
 chrome.webRequest.onBeforeRequest.addListener(
 	function(info) {
-		if (!isEnabled()) {
+		if (states[readState()].abort()) {
 			return {};
 		}
 
@@ -44,12 +51,12 @@ chrome.webRequest.onBeforeRequest.addListener(
 			try {
 				var singleImageSrc = getSingleImage(xhr);
 
-				return {redirectUrl: singleImageSrc};
-			} catch(e) {
+				response = {redirectUrl: singleImageSrc};
+			} catch (e) {
 				console.log(e);
 			}
 		});
-		return {};
+		return response;
 	},
 	// filters
 	{
@@ -62,7 +69,8 @@ chrome.webRequest.onBeforeRequest.addListener(
 		types: ["image"]
 	},
 	// extraInfoSpec
-	["blocking"]);
+	["blocking"]
+);
 
 function request(url, callback) {
 	var xhr = new XMLHttpRequest;
@@ -94,9 +102,9 @@ function getSingleImage(xhr) {
 			throw new Error('ERROR: gif is broken.');
 		}
 		
-		if (image.Image.length !== 0) {
-			throw new Error('Image is not animated, throw so we dont interfer with other plugins...');	
-		}
+		//if (image.Image.length !== 0) {
+			//throw new Error('Image is not animated, throw so we dont interfer with other plugins...');	
+		//}
 
 		var nonAnimatedGif = [
 				image.Header,
@@ -120,3 +128,5 @@ var GifImage = function () {
 	this.GraphicControlExtension = [];
 	this.Tail = ";";
 };
+
+updateTabs();

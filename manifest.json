@@ -10,18 +10,10 @@
     "32": "logo32.png"
   },
   "browser_action": {
-    "default_icon": {
-      "19": "logo19.png",
-      "38": "logo38.png"
-    },
-    "bw_icon": {
-      "19": "bwlogo19.png",
-      "38": "bwlogo38.png"
-    },    
     "default_title": "Gif Jam"
   },  
   "background": {
-    "scripts": ["background.js", "parser.js"]
+    "scripts": ["states.js", "parser.js", "background.js"]
   },
   "manifest_version": 2
 }
