@@ -4,8 +4,8 @@ var tabId = 0;
 var states = 
 [
 	new Stop(),
-	new Play()
-	//new Once()
+	new Play(),
+	new Once()
 ];
 
 var updateTabs = function () {
@@ -106,10 +106,19 @@ function getSingleImage(xhr) {
 			//throw new Error('Image is not animated, throw so we dont interfer with other plugins...');	
 		//}
 
+		if (image.ApplicationExtension.length !== 0) {
+			image.ApplicationExtension[0][16] = 0x01;
+			image.ApplicationExtension[0][17] = 0x00;
+		}
+
 		var nonAnimatedGif = [
 				image.Header,
-				image.GraphicControlExtension.length !== 0 ? image.GraphicControlExtension[0] : "",
-				image.Image[0],
+				image.ApplicationExtension.join(""),
+				states[readState()].once() ? burn(image.GraphicControlExtension, image.Image).join("") : image.Image[0],
+				//states[readState()].once() ? image.GraphicControlExtension.join("") : image.GraphicControlExtension[0],
+				//image.GraphicControlExtension.length !== 0 ? image.GraphicControlExtension[0] : "",
+				//image.GraphicControlExtension.join(""),
+				states[readState()].once() ? image.Image.join("") : image.Image[0],
 				image.Tail
 			].join('');
 		var dataURL = 'data:image/gif;base64,' + btoa(nonAnimatedGif);
@@ -120,10 +129,21 @@ function getSingleImage(xhr) {
 	throw new Error('ERROR: Image is not an animatable format.');
 }
 
+var burn = function (ext, img) {
+	var result = [];
+
+	for (var i = 0; i < ext.length && i < img.length; ++i) {
+		result.push(ext[i]);
+		result.push(img[i]);
+	}
+
+	return result;
+};
+
 var GifImage = function () {
 	this.Header = null;
-	this.ApplicationExtension = null;
-	this.CommentExtension = null;
+	this.ApplicationExtension = [];
+	this.CommentExtension = [];
 	this.Image = [];
 	this.GraphicControlExtension = [];
 	this.Tail = ";";

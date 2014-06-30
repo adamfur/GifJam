@@ -1,4 +1,4 @@
- 
+
 var GifParser = function (data) {
 	this._data = data;
 	this._offset = 0;
@@ -78,7 +78,7 @@ var GifParser = function (data) {
                 this.readSymbol();
                 if (this.accept('\xff')) {
                     this.readApplicationExtensionBlock();
-                    this._image.ApplicationExtension = this.readRange(begin, this._offset);
+                    this._image.ApplicationExtension.push(this.readRange(begin, this._offset));
                 }
                 else if (this.accept('\xf9')) {
                     this.readGraphicControlExtensionBlock();
@@ -86,16 +86,21 @@ var GifParser = function (data) {
                 }
                 else if (this.expect('\xfe')) {
                     this.readCommentExtensionBlock();
-                    this._image.CommentExtension = this.readRange(begin, this._offset);
+                    this._image.CommentExtension.push(this.readRange(begin, this._offset));
                 }
             }
             else if (this.accept('\x2c')) {
                 this.readImageBlock();
                 this._image.Image.push(this.readRange(begin, this._offset));
 			    //stop parsing after we got first frame
-			    return;
             }
+/*
+            else if (this.expect('\x3b')) {
+                break;
+            }
+*/           
             else {
+            	//console.log("stopped with symbol: " + this.symbol());
 				//work around for broken images...
 				return;
 			}

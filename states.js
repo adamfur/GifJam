@@ -32,7 +32,7 @@ function Once() {
 	};
 
 	this.icon = function () {
-		return "/pause.png";
+		return "/once.png";
 	}	
 
 	this.once = function () {
