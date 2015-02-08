@@ -64,7 +64,9 @@ chrome.webRequest.onBeforeRequest.addListener(
 			"http://*/*.gif",
 			"https://*/*.gif",
 			"http://*/*.gif?*",
-			"https://*/*.gif?*"
+			"https://*/*.gif?*",
+			"http://*/*.gif&*",
+			"https://*/*.gif&*"
 		],
 		types: ["image"]
 	},

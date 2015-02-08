@@ -1,9 +1,9 @@
 {
   "name": "Gif Jam (Animation Stopper)",
   "short_name": "Gif Jam",
-  "version": "1.0.0.11",
+  "version": "1.0.0.12",
   "description": "Stop Gif Animations",
-  "permissions": ["tabs", "webRequest", "webRequestBlocking", "http://*/*.gif", "https://*/*.gif", "http://*/*.gif?*", "https://*/*.gif?*"],
+  "permissions": ["tabs", "webRequest", "webRequestBlocking", "http://*/*.gif", "https://*/*.gif", "http://*/*.gif?*", "https://*/*.gif?*", "http://*/*.gif&*", "https://*/*.gif&*"],
   "icons": {
     "128": "logo128.png",
     "64": "logo64.png",
